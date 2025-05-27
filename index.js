@@ -7,7 +7,7 @@ const app=express()
 const port=process.env.port||3002
 // middlewares 
 app.use(cors({
-    origin:["http://localhost:3000","https://allo-doctor-client.vercel.app"],
+    origin:["http://localhost:3000","https://allo-doctor-next-js.vercel.app"],
     credentials:true,
     allowedHeaders: ["Content-Type", "Authorization"]
 }))
