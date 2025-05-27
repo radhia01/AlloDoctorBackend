@@ -1,0 +1,10 @@
+const express=require("express")
+const router=express.Router()
+const {getUsers,getUser, addSpecialityToDoctor, getCurrentUser, getDoctors} = require("../controller/user")
+const validateUser=require("../middleware/verifyUser")
+router.get("/users",validateUser,getUsers)
+router.get("/users/doctors",getDoctors)
+router.get("/users/:id",validateUser,getUser)
+router.patch("/users/:idUser/specialities/:idSpec",validateUser,addSpecialityToDoctor)
+router.get("/users/current/user",validateUser,getCurrentUser)
+module.exports=router
