@@ -2,7 +2,7 @@ const prisma=require("../prisma")
 const bcrypt=require("bcryptjs")
 const jwt=require("jsonwebtoken")
 const generateTokens = require("../utils/generateTokens")
-const expiredIn=2*60*1000
+const EXPIRE_TIME=2*60*1000
 // signup
 const signUp=async(req,res)=>{
     const {firstName,lastName,email,password,phone ,role}=req.body   
@@ -30,23 +30,22 @@ const signUp=async(req,res)=>{
 // signIn
 const signIn=async(req,res)=>{
   
-    const {email,password}=req.body   
-    console.log(req.body)
+    const {email,password}=req.body     
     try {
        const existingUser = await prisma.user.findUnique({
-  
-      where: { email },
-      select: {
-        id:true,
-        firstName:true,
-        lastName:true,
-        role:true,
-        email: true,
-        password: true,
-        role:true
+          where: { email },
+          select: {
+            id:true,
+            firstName:true,
+            lastName:true,
+            role:true,
+            email: true,
+            password: true,
+            role:true
       },
     }
 )
+
         if(!existingUser){
             return res.status(409).json({message:"User not exist"})
         }
@@ -58,20 +57,18 @@ const signIn=async(req,res)=>{
       
        // generate tokens
        const {accessToken,refreshToken}=generateTokens(existingUser)
-              res.cookie("refreshToken",refreshToken,{
-              httpOnly:true,
-              secure:false,
-              maxAge:4*60*1000
-          
-             })
-
-            const user={
-           sid:existingUser.id,
+             
+          const user={
+           id:existingUser.id,
            email:existingUser.email,
            role:existingUser.role,
        }
        console.log(user,accessToken)
-              return res.status(200).json({user,accessToken,refreshToken,expiredIn})
+              return res.status(200).json({user,
+                accessToken,
+                refreshToken,
+                expiredIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),
+              })
         
     } catch (error) {
            return res.status(500).json({message:error.message})
@@ -100,7 +97,7 @@ const refreshToken = async (req, res) => {
       const refreshToken=jwt.sign({id:existingUser.id,role:existingUser.role},process.env.ACCESS_TOKEN,{expiresIn:"4m"})
       const accessToken=jwt.sign({id:existingUser.id,role:existingUser.role},process.env.ACCESS_TOKEN,{expiresIn:"1m"})
        
-      return  res.status(200).json({accessToken,refreshToken,expiredIn})
+      return  res.status(200).json({accessToken,refreshToken, expiredIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),})
     } catch (error) {
       return res.status(500).json({ message: error.message });
     }

@@ -4,6 +4,9 @@ CREATE TYPE "Status" AS ENUM ('PENDING', 'COMPLETED', 'REJECTED');
 -- CreateEnum
 CREATE TYPE "DayOfWeek" AS ENUM ('SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY');
 
+-- CreateEnum
+CREATE TYPE "Role" AS ENUM ('DOCTOR', 'PATIENT');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
@@ -11,11 +14,23 @@ CREATE TABLE "User" (
     "lastName" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
-    "adressId" INTEGER NOT NULL,
+    "phone" TEXT NOT NULL,
+    "description" TEXT,
+    "image" TEXT,
+    "role" "Role" NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "update_at" TIMESTAMP(3) NOT NULL,
+    "specialtyId" INTEGER,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Speciality" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+
+    CONSTRAINT "Speciality_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -35,12 +50,9 @@ CREATE TABLE "Appointment" (
 CREATE TABLE "Address" (
     "id" SERIAL NOT NULL,
     "street" TEXT NOT NULL,
-    "number" TEXT NOT NULL,
-    "city" TEXT NOT NULL,
-    "country" TEXT NOT NULL,
-    "postalCode" TEXT NOT NULL,
+    "city" TEXT,
     "governorate" TEXT NOT NULL,
-    "idUser" INTEGER NOT NULL,
+    "userId" INTEGER NOT NULL,
 
     CONSTRAINT "Address_pkey" PRIMARY KEY ("id")
 );
@@ -75,19 +87,22 @@ CREATE TABLE "_OffServiceToUser" (
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_adressId_key" ON "User"("adressId");
+CREATE UNIQUE INDEX "Address_userId_key" ON "Address"("userId");
 
 -- CreateIndex
 CREATE INDEX "_OffServiceToUser_B_index" ON "_OffServiceToUser"("B");
 
 -- AddForeignKey
-ALTER TABLE "User" ADD CONSTRAINT "User_adressId_fkey" FOREIGN KEY ("adressId") REFERENCES "Address"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "User" ADD CONSTRAINT "User_specialtyId_fkey" FOREIGN KEY ("specialtyId") REFERENCES "Speciality"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Appointment" ADD CONSTRAINT "Appointment_doctorId_fkey" FOREIGN KEY ("doctorId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Appointment" ADD CONSTRAINT "Appointment_patientId_fkey" FOREIGN KEY ("patientId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Address" ADD CONSTRAINT "Address_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Holiday" ADD CONSTRAINT "Holiday_doctorId_fkey" FOREIGN KEY ("doctorId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

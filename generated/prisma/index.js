@@ -197,7 +197,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/home/rahmani/Documents/ReactProjects/AlloDoctor/server/generated/prisma",
+      "value": "/home/rahmani/Documents/AlloDoctorProject/server/AlloDoctorBackend/generated/prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -211,7 +211,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/home/rahmani/Documents/ReactProjects/AlloDoctor/server/prisma/schema.prisma",
+    "sourceFilePath": "/home/rahmani/Documents/AlloDoctorProject/server/AlloDoctorBackend/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -229,7 +229,7 @@ const config = {
     "db": {
       "url": {
         "fromEnvVar": "DATABASE_URL",
-        "value": "postgresql://neondb_owner:npg_qS80njVYWQUN@ep-patient-wave-a4zso3vz-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require"
+        "value": "postgresql://neondb_owner:npg_mPoVdvwk80FH@ep-twilight-frog-a8gsvmr6-pooler.eastus2.azure.neon.tech/neondb?sslmode=require"
       }
     }
   },
