@@ -62,23 +62,21 @@ const signIn=async(req,res)=>{
            id:existingUser.id,
            email:existingUser.email,
            role:existingUser.role,
-       }
-       console.log(user,accessToken)
-              return res.status(200).json({user,
-                accessToken,
-                refreshToken,
-                expiredIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),
-              })
-        
-    } catch (error) {
-           return res.status(500).json({message:error.message})
-    }
-}
+                       }
+          return res.status(200).json({user,
+            accessToken,
+            refreshToken,
+            expiredIn:new Date().setTime(new Date().getTime() + EXPIRE_TIME),
+           })
+            } 
+            catch (error) {
+               return res.status(500).json({message:error.message})
+        }
+      }
 
 
 const refreshToken = async (req, res) => {
   const authToken = req.headers.authorization
-  console.log(authToken)
   const token=authToken.split(" ")[1]
   jwt.verify(token, process.env.REFRESH_TOKEN, async (err, decoded) => {
     if (err) {
@@ -93,8 +91,8 @@ const refreshToken = async (req, res) => {
       if (!existingUser) {
         return res.status(404).json({ message: "User not found" });
       }
-      const refreshToken=jwt.sign({id:existingUser.id,role:existingUser.role},process.env.ACCESS_TOKEN,{expiresIn:"4m"})
-      const accessToken=jwt.sign({id:existingUser.id,role:existingUser.role},process.env.ACCESS_TOKEN,{expiresIn:"1m"})
+      const refreshToken=jwt.sign({id:existingUser.id,role:existingUser.role},process.env.ACCESS_TOKEN,{expiresIn:"7d"})
+      const accessToken=jwt.sign({id:existingUser.id,role:existingUser.role},process.env.ACCESS_TOKEN,{expiresIn:"4m"})
        
       return  res.status(200).json({accessToken,refreshToken, expiredIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),})
     } catch (error) {
