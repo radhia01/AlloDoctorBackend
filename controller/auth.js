@@ -78,6 +78,7 @@ const signIn=async(req,res)=>{
 const refreshToken = async (req, res) => {
   const authToken = req.headers.authorization
   const token=authToken.split(" ")[1]
+  console.log("token is "+token)
   jwt.verify(token, process.env.REFRESH_TOKEN, async (err, decoded) => {
     if (err) {
       return res.status(403).json({ message: "Invalid refresh token" });
